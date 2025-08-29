@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { X, Mail, Lock, User, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { X, Mail, Lock, User, Eye, EyeOff, Loader2, Hand, MessageSquare } from 'lucide-react';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -70,10 +70,22 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMode = 'l
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
         <div className="p-6">
+          {/* Header */}
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-slate-800">
-              {mode === 'login' ? 'Welcome Back' : 'Create Account'}
-            </h2>
+            <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-1">
+                <Hand className="w-6 h-6 text-blue-600" />
+                <MessageSquare className="w-5 h-5 text-green-600" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-slate-800">
+                  {mode === 'login' ? 'Welcome Back' : 'Join SignSpeak'}
+                </h2>
+                <p className="text-sm text-slate-600">
+                  {mode === 'login' ? 'Sign in to your account' : 'Create your accessibility account'}
+                </p>
+              </div>
+            </div>
             <button
               onClick={onClose}
               className="p-2 text-slate-400 hover:text-slate-600 transition-colors"
@@ -81,6 +93,19 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMode = 'l
               <X className="w-5 h-5" />
             </button>
           </div>
+
+          {/* Benefits Banner for Registration */}
+          {mode === 'register' && (
+            <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200">
+              <h3 className="text-sm font-semibold text-slate-800 mb-2">Why create an account?</h3>
+              <ul className="text-xs text-slate-600 space-y-1">
+                <li>• Save your personalized settings and preferences</li>
+                <li>• Access advanced voice assistant features</li>
+                <li>• Download and manage your conversation transcripts</li>
+                <li>• Sync across multiple devices</li>
+              </ul>
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {mode === 'register' && (
@@ -179,6 +204,16 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMode = 'l
               </button>
             </p>
           </div>
+
+          {/* Privacy Notice for Registration */}
+          {mode === 'register' && (
+            <div className="mt-4 p-3 bg-slate-50 rounded-lg">
+              <p className="text-xs text-slate-500 text-center">
+                By creating an account, you agree to our commitment to accessibility and privacy. 
+                Your data is securely stored and never shared with third parties.
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>

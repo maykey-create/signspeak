@@ -1,20 +1,34 @@
-import React from 'react';
-import { Hand, MessageSquare, Accessibility, User, LogIn } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
+import React, { useState } from 'react';
+import { AuthProvider } from './contexts/AuthContext';
+import { SettingsProvider } from './contexts/SettingsContext';
+import { CameraProvider } from './contexts/CameraContext';
+import Header from './components/Header';
+import CameraView from './components/CameraView';
+import CaptionOverlay from './components/CaptionOverlay';
+import ControlPanel from './components/ControlPanel';
+import SettingsPanel from './components/SettingsPanel';
+import AuthModal from './components/AuthModal';
+import UserProfile from './components/UserProfile';
 
-interface HeaderProps {
-  onAuthModalOpen: () => void;
-  onProfileModalOpen: () => void;
-}
+const App: React.FC = () => {
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [profileModalOpen, setProfileModalOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
 
-const Header: React.FC<HeaderProps> = ({ onAuthModalOpen, onProfileModalOpen }) => {
+  const handleAuthModalOpen = (mode: 'login' | 'register' = 'login') => {
+    setAuthMode(mode);
+    setAuthModalOpen(true);
+  };
 
-const Header: React.FC = () => {
+  return (
     <AuthProvider>
       <SettingsProvider>
         <CameraProvider>
           <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-            <Header />
+            <Header 
+              onAuthModalOpen={handleAuthModalOpen}
+              onProfileModalOpen={() => setProfileModalOpen(true)}
+            />
             <main className="container mx-auto px-4 py-6">
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Camera and Caption Area */}
@@ -28,8 +42,19 @@ const Header: React.FC = () => {
                   <ControlPanel />
                   <SettingsPanel />
                 </div>
-            <Accessibility className="w-6 h-6 text-purple-600" />
+              </div>
             </main>
+
+            {/* Modals */}
+            <AuthModal 
+              isOpen={authModalOpen}
+              onClose={() => setAuthModalOpen(false)}
+              initialMode={authMode}
+            />
+            <UserProfile 
+              isOpen={profileModalOpen}
+              onClose={() => setProfileModalOpen(false)}
+            />
           </div>
         </CameraProvider>
       </SettingsProvider>
@@ -37,4 +62,4 @@ const Header: React.FC = () => {
   );
 };
 
-export default Header;
+export default App;

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { User, Mail, Globe, Heart, Save, Loader2, Camera, Edit3 } from 'lucide-react';
+import { User, Mail, Globe, Heart, Save, Loader2, Camera, Edit3, X } from 'lucide-react';
 
 interface UserProfileProps {
   isOpen: boolean;
