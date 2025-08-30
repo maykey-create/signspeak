@@ -41,6 +41,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!supabase) {
+      setLoading(false);
+      return;
+    }
+    
     if (!isSupabaseConfigured) {
       setLoading(false);
       return;
@@ -76,6 +81,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const loadProfile = async (userId: string) => {
     try {
+      if (!supabase) {
+        return;
+      }
+      
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
@@ -99,6 +108,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     try {
+      if (!supabase) {
+        throw new Error('Supabase not configured');
+      }
+      
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -134,6 +147,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     try {
+      if (!supabase) {
+        throw new Error('Supabase not configured');
+      }
+      
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -146,7 +163,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signOut = async () => {
     if (!isSupabaseConfigured) return;
-    await supabase.auth.signOut();
+    try {
+      if (!supabase) {
+        throw new Error('Supabase not configured');
+      }
+      
+      await supabase.auth.signOut();
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
   };
 
   const updateProfile = async (updates: Partial<Profile>) => {
@@ -157,6 +182,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (!user) return { error: 'No user logged in' };
 
     try {
+      if (!supabase) {
+        throw new Error('Supabase not configured');
+      }
+      
       const { error } = await supabase
         .from('profiles')
         .update({ ...updates, updated_at: new Date().toISOString() })
