@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User, Session } from '@supabase/supabase-js';
-import { supabase } from '../lib/supabase';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 interface Profile {
   id: string;
@@ -41,6 +41,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!isSupabaseConfigured) {
+      setLoading(false);
+      return;
+    }
+
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
@@ -89,6 +94,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signUp = async (email: string, password: string, fullName: string) => {
+    if (!isSupabaseConfigured) {
+      return { error: { message: 'Database not configured. Please set up Supabase to use authentication.' } };
+    }
+
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -120,6 +129,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signIn = async (email: string, password: string) => {
+    if (!isSupabaseConfigured) {
+      return { error: { message: 'Database not configured. Please set up Supabase to use authentication.' } };
+    }
+
     try {
       const { error } = await supabase.auth.signInWithPassword({
         email,
@@ -132,10 +145,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signOut = async () => {
+    if (!isSupabaseConfigured) return;
     await supabase.auth.signOut();
   };
 
   const updateProfile = async (updates: Partial<Profile>) => {
+    if (!isSupabaseConfigured) {
+      return { error: 'Database not configured' };
+    }
+
     if (!user) return { error: 'No user logged in' };
 
     try {

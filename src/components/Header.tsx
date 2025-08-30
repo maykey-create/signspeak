@@ -1,6 +1,7 @@
 import React from 'react';
-import { Hand, MessageSquare, Accessibility, User, LogIn } from 'lucide-react';
+import { Hand, MessageSquare, Accessibility, User, LogIn, AlertTriangle } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { isSupabaseConfigured } from '../lib/supabase';
 
 interface HeaderProps {
   onAuthModalOpen: (mode?: 'login' | 'register') => void;
@@ -33,6 +34,12 @@ const Header: React.FC<HeaderProps> = ({ onAuthModalOpen, onProfileModalOpen }) 
 
             {/* Authentication Section */}
             <div className="flex items-center space-x-3 border-l border-slate-200 pl-4">
+              {!isSupabaseConfigured && (
+                <div className="flex items-center space-x-2 px-3 py-1 bg-yellow-50 border border-yellow-200 rounded-lg">
+                  <AlertTriangle className="w-4 h-4 text-yellow-600" />
+                  <span className="text-xs text-yellow-700 font-medium">Demo Mode</span>
+                </div>
+              )}
               {loading ? (
                 <div className="w-8 h-8 bg-slate-200 rounded-full animate-pulse"></div>
               ) : user ? (
