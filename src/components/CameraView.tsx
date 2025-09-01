@@ -75,10 +75,10 @@ const CameraView: React.FC = () => {
               <div className="absolute inset-0">
                 {/* Hand tracking overlay */}
                 <div className="absolute top-4 left-4">
-                  <div className="bg-blue-500/80 backdrop-blur-sm rounded-lg px-3 py-2">
+                  <div className="bg-blue-500/90 backdrop-blur-sm rounded-lg px-3 py-2 shadow-lg">
                     <div className="flex items-center space-x-2 text-white text-sm">
                       <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                      <span>Hand Tracking Active</span>
+                      <span>ASL Recognition Active</span>
                     </div>
                   </div>
                 </div>

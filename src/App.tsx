@@ -7,6 +7,7 @@ import CameraView from './components/CameraView';
 import CaptionOverlay from './components/CaptionOverlay';
 import ControlPanel from './components/ControlPanel';
 import SettingsPanel from './components/SettingsPanel';
+import SignLanguageRecognizer from './components/SignLanguageRecognizer';
 import AuthModal from './components/AuthModal';
 import UserProfile from './components/UserProfile';
 
@@ -40,6 +41,7 @@ const App: React.FC = () => {
                 {/* Control Panels */}
                 <div className="space-y-6">
                   <ControlPanel />
+                  <SignLanguageRecognizer />
                   <SettingsPanel />
                 </div>
               </div>
