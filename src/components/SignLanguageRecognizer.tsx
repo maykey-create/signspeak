@@ -2,7 +2,7 @@ import React from 'react';
 import { useCamera } from '../contexts/CameraContext';
 import { useSettings } from '../contexts/SettingsContext';
 import { useSignLanguageRecognition } from '../hooks/useSignLanguageRecognition';
-import { Hand, Brain, Zap, RotateCcw, Space, Delete, Copy, Download } from 'lucide-react';
+import { Hand, Brain, Zap, RotateCcw, Space, Delete, Copy, Download, Database, RefreshCw } from 'lucide-react';
 
 const SignLanguageRecognizer: React.FC = () => {
   const { isActive, videoRef } = useCamera();
@@ -22,6 +22,19 @@ const SignLanguageRecognizer: React.FC = () => {
     isActive && signLanguageEnabled,
     confidenceThreshold
   );
+
+  const [datasetInfo, setDatasetInfo] = React.useState<{
+    totalSamples: number;
+    lettersAvailable: string[];
+  } | null>(null);
+
+  // Load dataset info
+  React.useEffect(() => {
+    import('../models/SignLanguageModel').then(({ SignLanguageModel }) => {
+      const model = new SignLanguageModel();
+      setDatasetInfo(model.getDatasetInfo());
+    });
+  }, []);
 
   const copyToClipboard = async () => {
     try {
@@ -61,6 +74,12 @@ const SignLanguageRecognizer: React.FC = () => {
               <div className="flex items-center space-x-2 px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">
                 <Zap className="w-4 h-4 animate-pulse" />
                 <span>Loading AI...</span>
+              </div>
+            )}
+            {datasetInfo && (
+              <div className="flex items-center space-x-2 px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
+                <Database className="w-4 h-4" />
+                <span>{datasetInfo.totalSamples} samples</span>
               </div>
             )}
           </div>
@@ -209,6 +228,17 @@ const SignLanguageRecognizer: React.FC = () => {
             <li>• Hold each letter for 1-2 seconds for recognition</li>
             <li>• Use manual controls for space, delete, and clear</li>
           </ul>
+          
+          {datasetInfo && (
+            <div className="mt-3 pt-3 border-t border-blue-200">
+              <h5 className="text-xs font-medium text-blue-800 mb-1">Dataset Info:</h5>
+              <div className="text-xs text-blue-600 space-y-1">
+                <p>• {datasetInfo.totalSamples} training samples loaded</p>
+                <p>• Supports letters: {datasetInfo.lettersAvailable.join(', ')}</p>
+                <p>• Model trained on real ASL hand positions</p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
