@@ -61,7 +61,7 @@ export class SignLanguageModel {
 
     try {
       // Get training data from dataset
-      const { features, labels } = getTrainingData();
+      const { features, labels } = getTrainingData(this.labels);
       
       if (features.length === 0) {
         throw new Error('No training data available');

@@ -91,9 +91,9 @@ export const getAllSamples = (): Array<{ letter: string; landmarks: number[][]; 
   return samples;
 };
 
-export const getTrainingData = () => {
+export const getTrainingData = (allPossibleLabels?: string[]) => {
   const samples = getAllSamples();
-  const letters = getAllLetters();
+  const letters = allPossibleLabels || getAllLetters();
   
   // Convert to training format
   const features: number[][] = [];
