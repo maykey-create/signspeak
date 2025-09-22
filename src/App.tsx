@@ -41,9 +41,13 @@ const App: React.FC = () => {
                 {/* Control Panels */}
                 <div className="space-y-6">
                   <ControlPanel />
-                  <SignLanguageRecognizer />
                   <SettingsPanel />
                 </div>
+              </div>
+              
+              {/* Sign Language Recognition - Full Width */}
+              <div className="mt-6">
+                <SignLanguageRecognizer />
               </div>
             </main>
 

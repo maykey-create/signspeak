@@ -2,6 +2,7 @@ import React from 'react';
 import { useCamera } from '../contexts/CameraContext';
 import { useSettings } from '../contexts/SettingsContext';
 import { useSignLanguageRecognition } from '../hooks/useSignLanguageRecognition';
+import WordAnalysisPanel from './WordAnalysisPanel';
 import { Hand, Brain, Zap, RotateCcw, Space, Delete, Copy, Download, Database, RefreshCw } from 'lucide-react';
 
 const SignLanguageRecognizer: React.FC = () => {
@@ -14,6 +15,7 @@ const SignLanguageRecognizer: React.FC = () => {
     recognizedText,
     lastLetter,
     letterConfidence,
+    wordRecognition,
     clearText,
     addSpace,
     deleteLetter
@@ -242,6 +244,15 @@ const SignLanguageRecognizer: React.FC = () => {
         </div>
       </div>
     </div>
+    
+    {/* Word Analysis Panel */}
+    <WordAnalysisPanel
+      analysis={wordRecognition.analysis}
+      currentWord={wordRecognition.currentWord}
+      isAnalyzing={wordRecognition.isAnalyzing}
+      onClearHistory={wordRecognition.clearHistory}
+      onExportAnalysis={wordRecognition.exportAnalysis}
+    />
   );
 };
 

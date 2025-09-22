@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { SignLanguageModel, PredictionResult } from '../models/SignLanguageModel';
 import { HandTracker, HandTrackingResult } from '../utils/handTracking';
+import { useWordRecognition } from './useWordRecognition';
 
 interface RecognitionState {
   currentPrediction: PredictionResult | null;
@@ -30,6 +31,9 @@ export const useSignLanguageRecognition = (
   const processingRef = useRef(false);
   const lastPredictionTimeRef = useRef(0);
   const stableLetterRef = useRef<{ letter: string; count: number; startTime: number } | null>(null);
+
+  // Initialize word recognition
+  const wordRecognition = useWordRecognition(modelRef.current, isActive);
 
   // Initialize model and hand tracker
   useEffect(() => {
@@ -104,6 +108,9 @@ export const useSignLanguageRecognition = (
               
               lastPredictionTimeRef.current = currentTime;
               stableLetterRef.current = null;
+              
+              // Add letter to word recognition
+              wordRecognition.addLetter(prediction);
             }
           }
         } else {
@@ -173,6 +180,7 @@ export const useSignLanguageRecognition = (
       ...prev,
       recognizedText: prev.recognizedText + ' '
     }));
+    wordRecognition.addSpace();
   }, []);
 
   const deleteLetter = useCallback(() => {
@@ -180,10 +188,12 @@ export const useSignLanguageRecognition = (
       ...prev,
       recognizedText: prev.recognizedText.slice(0, -1)
     }));
+    wordRecognition.deleteLastLetter();
   }, []);
 
   return {
     ...state,
+    wordRecognition,
     clearText,
     addSpace,
     deleteLetter
