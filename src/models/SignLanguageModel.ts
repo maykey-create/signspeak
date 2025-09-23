@@ -61,17 +61,20 @@ export class SignLanguageModel {
 
     try {
       // Get training data from dataset
-      const { features, labels } = getTrainingData(this.labels);
+      const { features, labels } = getTrainingData(this.labels.slice(0, 26)); // Only use A-Z for now
       
       if (features.length === 0) {
         throw new Error('No training data available');
       }
 
+      console.log(`Training with ${features.length} samples, ${features[0]?.length} features per sample`);
+      console.log(`Output classes: ${this.labels.length}`);
+
       // Create model architecture
       this.model = tf.sequential({
         layers: [
           tf.layers.dense({ 
-            inputShape: [42], // 21 landmarks * 2 coordinates
+            inputShape: [features[0]?.length || 42], // Dynamic input shape based on actual data
             units: 128, 
             activation: 'relu',
             kernelRegularizer: tf.regularizers.l2({ l2: 0.001 })
@@ -108,7 +111,7 @@ export class SignLanguageModel {
       // Train the model
       console.log('Training model with', features.length, 'samples...');
       await this.model.fit(xs, ys, {
-        epochs: 50,
+        epochs: 30, // Reduced epochs for faster training
         batchSize: 8,
         validationSplit: 0.2,
         shuffle: true,
@@ -184,13 +187,15 @@ export class SignLanguageModel {
       // Flatten landmarks to match model input shape
       const flatLandmarks = landmarks.flat();
       
-      // Ensure we have the expected number of features (21 landmarks * 2 coordinates = 42)
-      if (flatLandmarks.length !== 42) {
+      // Ensure we have the expected number of features
+      const expectedFeatures = 42; // 21 landmarks * 2 coordinates
+      if (flatLandmarks.length !== expectedFeatures) {
+        console.warn(`Expected ${expectedFeatures} features, got ${flatLandmarks.length}`);
         return null;
       }
 
       // Normalize landmarks (assuming they're already in 0-1 range from MediaPipe)
-      const inputTensor = tf.tensor2d([flatLandmarks], [1, 42]);
+      const inputTensor = tf.tensor2d([flatLandmarks], [1, expectedFeatures]);
       
       // Make prediction
       const prediction = this.model.predict(inputTensor) as tf.Tensor;
@@ -214,7 +219,7 @@ export class SignLanguageModel {
       // Return result if confidence is above threshold
       if (maxConfidence > 0.4) {
         return {
-          letter: this.labels[maxIndex],
+          letter: this.labels[maxIndex] || 'UNKNOWN',
           confidence: maxConfidence
         };
       }
