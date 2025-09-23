@@ -44,6 +44,13 @@ export class HandTracker {
       return;
     }
 
+    // Check if video element is ready for processing
+    if (!videoElement || 
+        videoElement.readyState < 2 || 
+        videoElement.videoWidth === 0 || 
+        videoElement.videoHeight === 0) {
+      return;
+    }
     try {
       this.hands.onResults((results: Results) => {
         const handTrackingResult: HandTrackingResult = {
