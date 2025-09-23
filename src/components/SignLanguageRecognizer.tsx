@@ -59,7 +59,8 @@ const SignLanguageRecognizer: React.FC = () => {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+    <>
+      <div className="bg-white rounded-xl shadow-lg overflow-hidden">
       <div className="p-4 border-b border-slate-200">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold text-slate-800 flex items-center">
@@ -243,16 +244,17 @@ const SignLanguageRecognizer: React.FC = () => {
           )}
         </div>
       </div>
-    </div>
-    
-    {/* Word Analysis Panel */}
-    <WordAnalysisPanel
-      analysis={wordRecognition.analysis}
-      currentWord={wordRecognition.currentWord}
-      isAnalyzing={wordRecognition.isAnalyzing}
-      onClearHistory={wordRecognition.clearHistory}
-      onExportAnalysis={wordRecognition.exportAnalysis}
-    />
+      </div>
+      
+      {/* Word Analysis Panel */}
+      <WordAnalysisPanel
+        analysis={wordRecognition.analysis}
+        currentWord={wordRecognition.currentWord}
+        isAnalyzing={wordRecognition.isAnalyzing}
+        onClearHistory={wordRecognition.clearHistory}
+        onExportAnalysis={wordRecognition.exportAnalysis}
+      />
+    </>
   );
 };
 
